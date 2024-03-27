@@ -1,0 +1,39 @@
+<div id="block-course-activity-time-edit-{{uniqid}}" class="container-fluid">
+    <h3 class="course-name">{{course.fullname}}</h3>
+
+    <div class="pt-3">
+        <div class="course-activity-time-table-head row">
+            <div class="col-4 text-center">
+                name
+            </div>
+            <div class="col-4 text-center">
+                hours
+            </div>
+            <div class="col-4 text-center">
+                edit activity
+            </div>
+        </div>
+        <div class="course-activity-time-table-body">
+            {{#activities}}
+                <div class="row pt-2">
+                    <div class="col-4 text-center">
+                        {{name}}
+                    </div>
+                    <div class="col-4 text-center d-flex align-items-center justify-content-center">
+                    {{#time}}
+                        <span class="add-time">
+                            {{time}}
+                        </span>
+                    {{/time}}
+                    {{^time}}
+                        <input type="text" class="insert-time" data-activity="{{id}}">
+                    {{/time}}
+                    </div>
+                    <div class="col-4 text-center">
+                        edit activity
+                    </div>
+                </div>
+            {{/activities}}
+        </div>
+    </div>
+</div>

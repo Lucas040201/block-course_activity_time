@@ -1,0 +1,5 @@
+.course_activity_time_content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
