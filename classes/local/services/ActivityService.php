@@ -63,12 +63,20 @@ class ActivityService
             }
         }
         $coursesTime = $this->courseActivityTimeRepository->getCoursesTime($activitiesId);
-        return array_map(function ($activity) use ($coursesTime) {
-            $time = array_filter($coursesTime, function ($courseTime) use ($activity) {
-                return $courseTime->moduleid === $activity->id;
-            });
 
-            $activity->time = $time[0]->estimatedtime ?? null;
+        return array_map(function ($activity) use ($coursesTime) {
+            $time = array_values(array_filter($coursesTime, function ($courseTime) use ($activity) {
+                return $courseTime->moduleid === $activity->id;
+            }));
+        
+            $finalLabel = '';
+
+            if (!empty($time[0])) {
+                $time = $time[0];
+                $finalLabel = '<span class="time">'. $time->estimatedtime . '</span>'. ($time->estimatedtime > 1 ? ' horas' : ' hora');
+            }
+
+            $activity->time = $finalLabel;
 
             return $activity;
         }, $activitiesToFormat);
