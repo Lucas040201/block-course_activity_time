@@ -3,3 +3,8 @@
     flex-direction: column;
     gap: 10px;
 }
+
+.insert-time:focus {
+    border: 1px solid black;
+    color: black;
+}

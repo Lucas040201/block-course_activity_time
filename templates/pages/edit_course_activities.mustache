@@ -1,6 +1,8 @@
-<div id="block-course-activity-time-edit-{{uniqid}}" class="container-fluid">
-    <h3 class="course-name">{{course.fullname}}</h3>
-
+<div id="block-course-activity-time-edit-{{uniqid}}" class="container-fluid" data-courseid="{{course.id}}">
+    <div class="d-flex justify-content-between">
+        <h3 class="course-name">{{course.fullname}}</h3>
+        <p>Carga Horária total: <span class="total-time"></span></p>
+    </div>
     <div class="pt-3">
         <div class="course-activity-time-table-head row">
             <div class="col-4 text-center">
@@ -16,17 +18,17 @@
         <div class="course-activity-time-table-body">
             {{#activities}}
                 <div class="row pt-2">
-                    <div class="col-4 text-center">
+                    <div class="col-4 text-center pt-2 pb-2">
                         {{name}}
                     </div>
-                    <div class="col-4 text-center d-flex align-items-center justify-content-center">
+                    <div class="col-4 text-center d-flex align-items-center justify-content-center" data-activity="{{id}}">
                     {{#time}}
                         <span class="add-time">
-                            {{time}}
+                            {{{time}}}
                         </span>
                     {{/time}}
                     {{^time}}
-                        <input type="text" class="insert-time" data-activity="{{id}}">
+                        <input type="number" class="insert-time">
                     {{/time}}
                     </div>
                     <div class="col-4 text-center">
@@ -37,3 +39,14 @@
         </div>
     </div>
 </div>
+{{#js}}
+require(
+    [
+        'jquery',
+        'block_course_activity_time/main'
+    ], function ($, Main) {
+        let root = $('#block-course-activity-time-edit-{{uniqid}}');
+        Main.initEditCourseTime(root);
+    }
+);
+{{/js}}
