@@ -45,15 +45,7 @@ abstract class RepositoryBase
         global $DB;
 
         $this->table = trim($table);
-        $this->parseConfig($config);
         $this->db = $DB;
-    }
-
-    private function parseConfig(array $config): void
-    {
-        if (array_key_exists('insert_return_id', $config)) {
-            $this->insertReturnId = $config['insert_return_id'];
-        }
     }
 
     /**
@@ -61,7 +53,7 @@ abstract class RepositoryBase
      * @return void
      * @throws dml_exception
      */
-    public function save(stdClass $object): void
+    public function save(stdClass $object)
     {
         $object->timemodified = time();
 
@@ -70,7 +62,10 @@ abstract class RepositoryBase
             return;
         }
 
+        $object->timecreated = time();
         $object->id = $this->db->insert_record($this->table, $object, $this->insertReturnId);
+
+        return $object;
     }
 
     public function delete(stdClass $object): void

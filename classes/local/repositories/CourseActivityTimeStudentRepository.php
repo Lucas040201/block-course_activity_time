@@ -24,28 +24,30 @@
 
 namespace block_course_activity_time\local\repositories;
 
-class CourseActivityTimeCourseRepository extends RepositoryBase
+class CourseActivityTimeStudentRepository extends RepositoryBase
 {
     public function __construct()
     {
-        parent::__construct('course_activity_time_course');
+        parent::__construct('course_activity_time_student');
     }
 
-    public function getCoursesTime(array $modulesId)
-    {
-        $inIds = join(',', $modulesId);
-        $sql = <<<SQL
-        SELECT * FROM {{$this->getTable()}} WHERE moduleid in ({$inIds})
-SQL;
-
-        return $this->db->get_records_sql($sql);
-    }
-
-    public function findByCourseAndActivity(int $courseId, int $activityId)
+    public function findByUserAndActivity(int $userId, int $activityId)
     {
         return $this->db->get_record($this->getTable(), [
-            'courseId' => $courseId,
-            'moduleId' => $activityId
+            'userid' => $userId,
+            'courseactivityid' => $activityId
         ]);
+    }
+
+    public function getPaginatedUsers(
+        int $courseid,
+        int $offset,
+        int $limit,
+        string $search,
+        string $from,
+        string $to
+    )
+    {
+
     }
 }
