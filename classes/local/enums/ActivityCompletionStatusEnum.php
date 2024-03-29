@@ -21,10 +21,10 @@
  * @copyright 2024 Lucas Mendes {@link https://www.lucasmendesdev.com.br}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace block_course_activity_time\enums;
+namespace block_course_activity_time\local\enums;
 
 
-class ActivityEnum
+class ActivityCompletionStatusEnum
 {
     const VIEWED = 1;
     const COMPLETED = 2;
