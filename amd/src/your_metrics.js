@@ -23,29 +23,18 @@
 
 define([
     "jquery",
-    "block_course_activity_time/edit_course_time",
-    "block_course_activity_time/students_progress",
-    "block_course_activity_time/your_metrics",
-], function ($, EditCourseTime, StudentsProgress, YoutMetrics) {
+    "core/templates",
+    "core/str",
+    "block_course_activity_time/repository"
+], function ($, Templates, Str, Repository) {
 
-    var initEditCourseTime = (root) => {
-        root = $(root);
-        EditCourseTime.init(root);
-    }
 
-    var initStudentsProgress = (root) => {
+    function init(root) {
         root = $(root);
-        StudentsProgress.init(root);
-    }
 
-    var initYourMetrics = (root) =>{
-        root = $(root);
-        YoutMetrics.init(root);
     }
 
     return {
-        initEditCourseTime,
-        initStudentsProgress,
-        initYourMetrics,
+        init: init,
     };
 });
