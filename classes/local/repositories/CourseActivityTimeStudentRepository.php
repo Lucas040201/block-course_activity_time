@@ -48,6 +48,83 @@ class CourseActivityTimeStudentRepository extends RepositoryBase
         string $to
     )
     {
+        $joinDate = '';
+        if(!empty($from) || !empty($to)) {
+            $joinDate = ' inner join {course_completions} mcc on mcc.userid = mu.id and mcc.course = :coursecompletionid ';
+        }
 
+        $sql = "
+        select 
+            mu.id,
+            (mu.firstname || ' ' || mu.lastname) as fullname,
+            mu.email,
+            (
+                select sum((mcats.completedat - mcats.firstaccess)) from {{$this->getTable()}} mcats inner join {course_activity_time_course} mcatc on mcats.courseactivityid = mcatc.id where mcatc.courseid = :courseactivityid and completedat is not null and firstaccess is not null and mu.id = mcats.userid
+            ) as totaltime
+        from {user} mu 
+            inner join {user_enrolments} mue on mu.id = mue.userid 
+            inner join {enrol} me on me.id = mue.enrolid and me.courseid = :courseid";
+
+        $sqlCount = "
+        select 
+            count(mu.*)
+        from mdl_user mu 
+            inner join {user_enrolments} mue on mu.id = mue.userid 
+            inner join {enrol} me on me.id = mue.enrolid and me.courseid = :courseid";
+
+        if(!empty($joinDate)) {
+            $sql .= $joinDate;
+            $sqlCount .= $joinDate;
+        }
+
+        $sql .= " where me.enrol = 'manual'";
+        $sqlCount .= " where me.enrol = 'manual'";
+        
+        if(!empty($search)) {
+            $sql .= " and ((mu.firstname || ' ' || mu.lastname) ilike '%$search%' or mu.email ilike '%$search%')";
+            $sqlCount .= " and ((mu.firstname || ' ' || mu.lastname) ilike '%$search%' or mu.email ilike '%$search%')";
+        }
+
+        if(!empty($from) && !empty($to)) {
+            $sql .= " and to_timestamp(mcc.timecompleted)::date between '$from' and '$to' ";
+            $sqlCount .= " and to_timestamp(mcc.timecompleted)::date between '$from' and '$to' ";
+        } else if(!empty($from)) {
+            $sql .= " and to_timestamp(mcc.timecompleted)::date >= '$from' ";
+            $sqlCount .= " and to_timestamp(mcc.timecompleted)::date >= '$from' ";
+        } else if(!empty($to)) {
+            $sql .= " and to_timestamp(mcc.timecompleted)::date <= '$to' ";
+            $sqlCount .= " and to_timestamp(mcc.timecompleted)::date <= '$to' ";
+        }
+
+        $params = [
+            'courseid' => $courseid,
+            'courseactivityid' => $courseid,
+            'coursecompletionid' => $courseid,
+        ];
+
+
+        $sql .= "order by mu.firstname, mu.lastname asc";
+
+        return [array_values($this->db->get_records_sql($sql, $params, $offset, $limit)), $this->db->count_records_sql($sqlCount, $params)];
+    }
+
+    public function getUserTime(int $userId, array $activitiesIds)
+    {
+        $activitiesIds = join(', ', $activitiesIds);
+
+        $sql = "
+            select 
+                mcats.*,
+                mcatc.moduleid,
+                mcatc.estimatedtime
+            from {user} mu
+            inner join {{$this->getTable()}} mcats on mcats.userid = mu.id
+            inner join {course_activity_time_course} mcatc on mcats.courseactivityid = mcatc.id
+            where mcatc.moduleid in ($activitiesIds) and mu.id = :userid
+        ";
+
+        return array_values($this->db->get_records_sql($sql, [
+            'userid' => $userId
+        ]));
     }
 }

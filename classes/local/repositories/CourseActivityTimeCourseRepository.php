@@ -44,8 +44,16 @@ SQL;
     public function findByCourseAndActivity(int $courseId, int $activityId)
     {
         return $this->db->get_record($this->getTable(), [
-            'courseId' => $courseId,
-            'moduleId' => $activityId
+            'courseid' => $courseId,
+            'moduleid' => $activityId
+        ]);
+    }
+
+    public function getCourseEstimatedTime(int $courseId)
+    {
+        $sql = "select sum(estimatedtime) as total from {{$this->getTable()}} where courseid = :courseid";
+        return $this->db->get_record_sql($sql, [
+            'courseid' => $courseId
         ]);
     }
 }
