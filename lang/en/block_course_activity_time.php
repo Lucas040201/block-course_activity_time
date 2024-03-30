@@ -22,11 +22,38 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['pluginname'] = 'Block Course Activity Time';
+$string['pluginname'] = 'Course Activity Time Block';
 $string['block_title'] = 'Activity monitoring';
 $string['edit_course'] = 'Click here to edit this course\'s activity time';
 $string['progress_course'] = 'Click here to view student progress';
 $string['your_progress'] = 'Click here to see your progress';
-$string['page_title_edit'] = 'Edit Course Hours';
+$string['page_title_edit'] = 'Edit course workload';
+$string['page_title_students_progress'] = 'Students Progress';
+$string['page_title_your_metrics'] = 'Your Metrics';
 $string['not_found_course'] = 'Course not found';
+$string['see_students'] = 'Viewing course students:';
+$string['name_lable'] = 'Name';
+$string['email_label'] = 'Email';
+$string['totaltime_label'] = 'Total Time';
+$string['progress_label'] = 'Course Progress';
+$string['time_per_activity_label'] = 'Time per activity';
+$string['not_foud_students'] = 'No students were found with the given parameters';
+$string['empty_students'] = 'There are no students enrolled in this course';
+$string['see_more'] = 'See More';
+$string['hour_label'] = 'hour';
+$string['hours_label'] = 'hours';
+$string['search'] = 'Search';
+$string['search_placeholder'] = 'Enter an email or name to search';
+$string['start_date'] = 'From';
+$string['end_date'] = 'To';
+$string['total'] = 'Total Students: ';
+$string['filter'] = 'Filters';
+$string['within_time'] = 'User is within course time';
+$string['not_within_time'] = 'User is out of course time';
+$string['total_course'] = 'Total course hours: ';
+$string['total_user'] = 'Total time spent: ';
+$string['defining_time'] = 'Defining the timing of course activities:';
+$string['total_workload'] = 'Total workload:';
+$string['unauthorized'] = 'Unauthorized';
+$string['not_enrolled'] = 'Not Enrolled';
 
