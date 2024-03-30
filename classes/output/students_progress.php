@@ -26,33 +26,26 @@ namespace block_course_activity_time\output;
 
 defined('MOODLE_INTERNAL') || die();
 
-use plugin_renderer_base;
+use renderable;
+use renderer_base;
+use stdClass;
+use templatable;
 
-class renderer extends plugin_renderer_base
+class students_progress implements renderable, templatable
 {
+    /** @var stdClass */
+    private $course;
 
-    public function render_main(main $main)
+    public function __construct(stdClass $course)
     {
-        $context = $main->export_for_template($this);
-
-        return $this->render_from_template('block_course_activity_time/pages/main', $context);
+        $this->course = $course;
     }
 
-    public function render_edit_course_activities(edit_course_activities $edit)
+    public function export_for_template(renderer_base $output)
     {
-        $context = $edit->export_for_template($this);
-        return $this->render_from_template('block_course_activity_time/pages/edit_course_activities', $context);
+        return [
+            'course' => $this->course,
+        ];
     }
 
-    public function render_students_progress(students_progress $progress)
-    {
-        $context = $progress->export_for_template($this);
-        return $this->render_from_template('block_course_activity_time/pages/students_progress', $context);
-    }
-
-    public function render_student_metrics(student_metrics $metrics)
-    {
-        $context = $metrics->export_for_template($this);
-        return $this->render_from_template('block_course_activity_time/pages/student_metrics', $context);
-    }
 }

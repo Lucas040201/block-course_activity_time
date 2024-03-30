@@ -38,12 +38,16 @@ class main implements renderable, templatable
 
     /** @var stdClass */
     private $course;
+
+    /** @var stdClass */
+    private $user;
     
     public function __construct(bool $isStudent = false)
     {
-        global $COURSE;
+        global $COURSE, $USER;
         $this->isStudent = $isStudent;
         $this->course = $COURSE;
+        $this->user = $USER;
     }
 
     public function export_for_template(renderer_base $output)
@@ -52,6 +56,7 @@ class main implements renderable, templatable
         return [
             'isStudent' => $this->isStudent,
             'course' => $this->course,
+            'user' => $this->user,
         ];
     }
 
