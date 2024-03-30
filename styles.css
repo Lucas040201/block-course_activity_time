@@ -8,3 +8,11 @@
     border: 1px solid black;
     color: black;
 }
+
+.course-activity-time-table-head {
+    border-bottom: 1px solid #666;
+}
+
+.table-row:nth-child(odd) {
+    background-color: #f3f3f3;
+}
