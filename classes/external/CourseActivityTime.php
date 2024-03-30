@@ -76,7 +76,8 @@ class CourseActivityTime extends external_api
                     "id" => new external_value(PARAM_INT),
                     "fullname" => new external_value(PARAM_TEXT),
                     "email" => new external_value(PARAM_TEXT),
-                    "totaltime" => new external_value(PARAM_TEXT),
+                    "totaltime" => new external_value(PARAM_INT),
+                    "progress" => new external_value(PARAM_TEXT),
                 ])),
                 "total" => new external_value(PARAM_INT),
                 "page" => new external_value(PARAM_INT),
@@ -94,18 +95,14 @@ class CourseActivityTime extends external_api
         )
     {
         try {
-            CourseActivityTimeStudentService::getService()->getStudents(
+            return CourseActivityTimeStudentService::getService()->getStudents(
                 $courseid,
                 $limit,
                 $page,
                 $search,
                 $from,
-                $to,
+                $to
              );
-
-            return [
-                'message' => 'Success'
-            ];
         } catch(Throwable $exception){
             $statusCode = 500;
 
