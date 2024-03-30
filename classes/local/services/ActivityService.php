@@ -26,6 +26,7 @@ namespace block_course_activity_time\local\services;
 
 use block_course_activity_time\local\repositories\ActivityRepository;
 use block_course_activity_time\local\repositories\CourseActivityTimeCourseRepository;
+use block_course_activity_time\local\repositories\CourseActivityTimeStudentRepository;
 
 use stdClass;
 
@@ -41,10 +42,14 @@ class ActivityService
     /** @var CourseActivityTimeCourseRepository */
     private $courseActivityTimeRepository;
 
+    /** @var CourseActivityTimeStudentRepository */
+    private $courseActivityTimeStudentsRepository;
+
     public function __construct()
     {
         $this->activityRepository = new ActivityRepository();
         $this->courseActivityTimeRepository = new CourseActivityTimeCourseRepository();
+        $this->courseActivityTimeStudentsRepository = new CourseActivityTimeStudentRepository();
     }
 
     public function getActivities(int $courseId, int $userId)
@@ -56,9 +61,9 @@ class ActivityService
             if(\core_availability\info_module::is_user_visible($cm, $userId)) {
                 $modInfo = $this->activityRepository->getCourseActivity($cm->modname, $cm->instance);
                 $item = new stdClass();
-                $item->id = $modInfo->id;
+                $item->id = $cm->id;
                 $item->name = $modInfo->name;
-                $activitiesId[] = $modInfo->id;
+                $activitiesId[] = $cm->id;
                 $activitiesToFormat[] = $item;
             }
         }
@@ -73,13 +78,58 @@ class ActivityService
 
             if (!empty($time[0])) {
                 $time = $time[0];
-                $finalLabel = '<span class="time">'. $time->estimatedtime . '</span>'. ($time->estimatedtime > 1 ? ' horas' : ' hora');
+                $finalLabel = '<span class="time">'. $time->estimatedtime . '</span> '. ($time->estimatedtime > 1 ? get_string('hours_label', 'block_course_activity_time') : get_string('hour_label', 'block_course_activity_time'));
             }
 
             $activity->time = $finalLabel;
 
             return $activity;
         }, $activitiesToFormat);
+    }
+
+    public function getActivitiesForUser(int $userId, int $courseId)
+    {
+        $mods = get_course_mods($courseId);
+        $activitiesToFormat = [];
+        $activitiesId = [];
+        foreach($mods as $cm) {
+            if(\core_availability\info_module::is_user_visible($cm, $userId)) {
+                $modInfo = $this->activityRepository->getCourseActivity($cm->modname, $cm->instance);
+                $item = new stdClass();
+                $item->id = $cm->id;
+                $item->name = $modInfo->name;
+                $activitiesId[] = $cm->id;
+                $activitiesToFormat[] = $item;
+            }
+        }
+        $userTime = $this->courseActivityTimeStudentsRepository->getUserTime($userId, $activitiesId);
+        $items = array_map(function ($activity) use ($userTime) {
+            $time = array_values(array_filter($userTime, function ($item) use ($activity) {
+                return $item->moduleid === $activity->id;
+            }));
+
+
+            $finalLabel = '-';
+            $hour = 0;
+            if (!empty($time[0])) {
+                $time = $time[0];
+                $hour = ceil(($time->completedat - $time->firstaccess) / 3600);
+                $finalLabel = $hour . ' ' . ($time->estimatedtime > 1 ? get_string('hours_label', 'block_course_activity_time') : get_string('hour_label', 'block_course_activity_time'));
+            }
+
+            $activity->activityTime = $finalLabel;
+            $activity->time = $hour;
+
+            return $activity;
+        }, $activitiesToFormat);
+
+        $totalCourse = $this->courseActivityTimeRepository->getCourseEstimatedTime($courseId);
+        $total = array_reduce($items, function($past, $current) {
+            return $past + $current->time;
+        }, 0);
+        $withinTime = $totalCourse->total >= $total;
+
+        return [$items, $total, $withinTime, $totalCourse];
     }
 
 

@@ -59,14 +59,18 @@ class CourseActivityTimeStudentService
             return;
         }
 
-        $userActivity = $this->courseActivityTimeStudentRepository->findByUserAndActivity($data['userid'], $data['contextinstanceid']);
-        if(!empty($userActivity)) {
+        $userActivity = $this->courseActivityTimeStudentRepository->findByUserAndActivity($data['userid'], $courseActivity->id);
+
+        if(!empty($userActivity->completedat)) {
             return;
         }
 
-        $userActivity = new stdClass();
+        if(empty($userActivity)) {
+            $userActivity = new stdClass();
+        }
+
         $userActivity->userid = $data['userid'];
-        $userActivity->courseactivityid = $data['contextinstanceid'];
+        $userActivity->courseactivityid = $courseActivity->id;
         $userActivity->firstaccess = time();
         $userActivity->status = ActivityCompletionStatusEnum::VIEWED;
 
@@ -85,7 +89,7 @@ class CourseActivityTimeStudentService
             return;
         }
 
-        $userActivity = $this->courseActivityTimeStudentRepository->findByUserAndActivity($data['userid'], $data['contextinstanceid']);
+        $userActivity = $this->courseActivityTimeStudentRepository->findByUserAndActivity($data['userid'], $courseActivity->id);
         if(empty($userActivity) || !empty($userActivity->completedat)) {
             return;
         }
@@ -98,11 +102,11 @@ class CourseActivityTimeStudentService
 
     public function getStudents(
         int $courseid,
-        int $limit,
-        int $page,
-        string $search,
-        string $from,
-        string $to
+        int $limit = 30,
+        int $page = 1,
+        string $search = null,
+        string $from = null,
+        string $to = null
     )
     {
         $offset = ($page - 1) * $limit;
@@ -114,6 +118,19 @@ class CourseActivityTimeStudentService
             $from,
             $to
         );
+
+        $course = get_course($courseid);
+
+
+        return [
+            'page' => $page,
+            'total' => $total,
+            'users' => array_map(function ($user) use ($course) {
+                $user->totaltime = ceil($user->totaltime / 3600);
+                $user->progress = (int) \core_completion\progress::get_course_progress_percentage($course, $user->id) . '%';
+                return $user;
+            }, $users),
+        ];
     }
 
     public static function getService(): CourseActivityTimeStudentService
