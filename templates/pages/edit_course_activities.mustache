@@ -1,27 +1,25 @@
 <div id="block-course-activity-time-edit-{{uniqid}}" class="container-fluid" data-courseid="{{course.id}}">
+    <h2>{{#str}}defining_time, block_course_activity_time{{/str}}</h2>
     <div class="d-flex justify-content-between">
         <h3 class="course-name">{{course.fullname}}</h3>
-        <p>Carga Horária total: <span class="total-time"></span></p>
+        <p>{{#str}}total_workload, block_course_activity_time{{/str}}<span class="total-time"></span></p>
     </div>
     <div class="pt-3">
         <div class="course-activity-time-table-head row">
-            <div class="col-4 text-center">
-                name
+            <div class="col-6 text-center">
+                {{#str}}name_lable, block_course_activity_time{{/str}}
             </div>
-            <div class="col-4 text-center">
-                hours
-            </div>
-            <div class="col-4 text-center">
-                edit activity
+            <div class="col-6 text-center">
+                {{#str}}hours_label, block_course_activity_time{{/str}}
             </div>
         </div>
         <div class="course-activity-time-table-body">
             {{#activities}}
-                <div class="row pt-2">
-                    <div class="col-4 text-center pt-2 pb-2">
+                <div class="row pt-2 table-row">
+                    <div class="col-6 text-center pt-2 pb-2">
                         {{name}}
                     </div>
-                    <div class="col-4 text-center d-flex align-items-center justify-content-center" data-activity="{{id}}">
+                    <div class="col-6 text-center d-flex align-items-center justify-content-center" data-activity="{{id}}">
                     {{#time}}
                         <span class="add-time">
                             {{{time}}}
@@ -30,9 +28,6 @@
                     {{^time}}
                         <input type="number" class="insert-time">
                     {{/time}}
-                    </div>
-                    <div class="col-4 text-center">
-                        edit activity
                     </div>
                 </div>
             {{/activities}}

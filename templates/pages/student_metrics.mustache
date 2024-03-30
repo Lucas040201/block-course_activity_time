@@ -1,0 +1,57 @@
+<div id="block-course-activity-time-students-progress-{{uniqid}}" class="container-fluid" data-courseid="{{course.id}}">
+    <div>
+        <h2>Veja as suas metricas para o curso:</h2>
+        <h3 class="course-name">{{course.fullname}}</h3>
+    </div>
+    <div class="row pt-3 pb-3">
+        <div class="col-md-4 text-center">
+            <b>
+                {{#withinTime}}
+                    {{#str}} within_time, block_course_activity_time {{/str}}
+                {{/withinTime}}
+                {{^withinTime}}
+                    {{#str}} not_within_time, block_course_activity_time {{/str}}
+                {{/withinTime}}
+            </b>
+        </div>
+        <div class="col-md-4 text-center">
+            {{#str}} total_course, block_course_activity_time {{/str}} <b>{{totalCourse}}</b>
+        </div>
+        <div class="col-md-4 text-center">
+            {{#str}} total_user, block_course_activity_time {{/str}} <b>{{totalTime}}</b>
+        </div>
+    </div>
+    <div class="pt-3">
+        <div class="course-activity-time-table-head row pb-2 pt-2">
+            <div class="col-6 text-center">
+                <b>{{#str}} name_lable, block_course_activity_time {{/str}}</b>
+            </div>
+            <div class="col-6 text-center">
+                <b>{{#str}} time_per_activity_label, block_course_activity_time {{/str}}</b>
+            </div>
+        </div>
+        <div class="course-activity-time-table-body">
+            {{#activities}}
+                <div class="row pb-2 pt-2 table-row">
+                    <div class="col-6 text-center">
+                        {{name}}
+                    </div>
+                    <div class="col-6 text-center">
+                        {{activityTime}}
+                    </div>
+                </div>
+            {{/activities}}
+        </div>
+    </div>
+</div>
+{{#js}}
+require(
+    [
+        'jquery',
+        'block_course_activity_time/main'
+    ], function ($, Main) {
+        let root = $('#block-course-activity-time-students-progress-{{uniqid}}');
+        Main.initStudentsProgress(root);
+    }
+);
+{{/js}}

@@ -1,0 +1,16 @@
+{{#users}}
+    <div class="row pt-2 students-item table-row">
+        <div class="col-3 text-center pt-2 pb-2">
+            <a href="/blocks/course_activity_time/student_metrics.php?id={{courseid}}&userid={{id}}" target="_blank">{{fullname}}</a>
+        </div>
+        <div class="col-3 text-center pt-2 pb-2">
+            <a href="/blocks/course_activity_time/student_metrics.php?id={{courseid}}&userid={{id}}" target="_blank">{{email}}</a>
+        </div>
+        <div class="col-3 text-center">
+            {{{totaltime}}}
+        </div>
+        <div class="col-3 text-center">
+            {{progress}}
+        </div>
+    </div>
+{{/users}}
