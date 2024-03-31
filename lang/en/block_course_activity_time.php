@@ -56,4 +56,4 @@ $string['defining_time'] = 'Defining the timing of course activities:';
 $string['total_workload'] = 'Total workload:';
 $string['unauthorized'] = 'Unauthorized';
 $string['not_enrolled'] = 'Not Enrolled';
-
+$string['your_metrics'] = 'See your metrics for the course:';

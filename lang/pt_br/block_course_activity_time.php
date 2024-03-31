@@ -56,3 +56,4 @@ $string['defining_time'] = 'Definindo o tempo das atividades do curso:';
 $string['total_workload'] = 'Carga Horária total:';
 $string['unauthorized'] = 'Não autorizado';
 $string['not_enrolled'] = 'usuário não matriculado';
+$string['your_metrics'] = 'Veja as suas metricas para o curso:';
