@@ -29,6 +29,8 @@ use block_course_activity_time\local\repositories\CourseActivityTimeCourseReposi
 use block_course_activity_time\local\enums\ActivityCompletionStatusEnum;
 use stdClass;
 use context_course;
+use moodle_url;
+
 class CourseActivityTimeStudentService
 {
 
@@ -128,6 +130,7 @@ class CourseActivityTimeStudentService
             'users' => array_map(function ($user) use ($course) {
                 $user->totaltime = ceil($user->totaltime / 3600);
                 $user->progress = (int) \core_completion\progress::get_course_progress_percentage($course, $user->id) . '%';
+                $user->userUrl = (new moodle_url("/blocks/course_activity_time/student_metrics.php?id={$course->id}&userid={$user->id}"))->out(false);
                 return $user;
             }, $users),
         ];

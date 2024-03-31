@@ -39,6 +39,7 @@ require_once("$CFG->libdir/externallib.php");
 
 use block_course_activity_time\local\services\CourseActivityTimeService;
 use block_course_activity_time\local\services\CourseActivityTimeStudentService;
+use external;
 
 class CourseActivityTime extends external_api
 {
@@ -78,6 +79,7 @@ class CourseActivityTime extends external_api
                     "email" => new external_value(PARAM_TEXT),
                     "totaltime" => new external_value(PARAM_INT),
                     "progress" => new external_value(PARAM_TEXT),
+                    "userUrl" => new external_value(PARAM_TEXT),
                 ])),
                 "total" => new external_value(PARAM_INT),
                 "page" => new external_value(PARAM_INT),
