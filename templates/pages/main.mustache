@@ -1,9 +1,9 @@
 <div class="d-flex flex-column course_activity_time_content pb-2 pt-2">
     {{#isStudent}}
-        <a href="/blocks/course_activity_time/student_metrics.php?id={{course.id}}&userid={{user.id}}">{{#str}} your_progress, block_course_activity_time {{/str}}</a>
+        <a href="{{metricsUrl}}">{{#str}} your_progress, block_course_activity_time {{/str}}</a>
     {{/isStudent}}
     {{^isStudent}}
-        <a href="/blocks/course_activity_time/edit_course_activities.php?id={{course.id}}">{{#str}} edit_course, block_course_activity_time {{/str}}</a>
-        <a href="/blocks/course_activity_time/students_progress.php?id={{course.id}}">{{#str}} progress_course, block_course_activity_time {{/str}}</a>
+        <a href="{{editCourseUrl}}">{{#str}} edit_course, block_course_activity_time {{/str}}</a>
+        <a href="{{usersUrl}}">{{#str}} progress_course, block_course_activity_time {{/str}}</a>
     {{/isStudent}}
 </div>

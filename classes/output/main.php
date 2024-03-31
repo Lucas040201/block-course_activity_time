@@ -36,18 +36,22 @@ class main implements renderable, templatable
     /** @var bool */
     private $isStudent;
 
-    /** @var stdClass */
-    private $course;
+    /** @var string */
+    private $metrics;
 
-    /** @var stdClass */
-    private $user;
+    /** @var string */
+    private $usersUrl;
+
+    /** @var string */
+    private $editCourseUrl;
+
     
-    public function __construct(bool $isStudent = false)
+    public function __construct(string $metrics, string $usersUrl, string $editCourseUrl, bool $isStudent = false)
     {
-        global $COURSE, $USER;
+        $this->metrics = $metrics;
+        $this->usersUrl = $usersUrl;
+        $this->editCourseUrl = $editCourseUrl;
         $this->isStudent = $isStudent;
-        $this->course = $COURSE;
-        $this->user = $USER;
     }
 
     public function export_for_template(renderer_base $output)
@@ -55,8 +59,9 @@ class main implements renderable, templatable
         
         return [
             'isStudent' => $this->isStudent,
-            'course' => $this->course,
-            'user' => $this->user,
+            'metricsUrl' => $this->metrics,
+            'editCourseUrl' => $this->editCourseUrl,
+            'usersUrl' => $this->usersUrl,
         ];
     }
 

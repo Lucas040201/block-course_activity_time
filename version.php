@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2024033000;
+$plugin->version = 2024033100;
 $plugin->requires = 2020110300;
 $plugin->component = 'block_course_activity_time';
 $plugin->maturity = MATURITY_STABLE;
