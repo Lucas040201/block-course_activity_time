@@ -77,7 +77,7 @@ class CourseActivityTime extends external_api
                     "id" => new external_value(PARAM_INT),
                     "fullname" => new external_value(PARAM_TEXT),
                     "email" => new external_value(PARAM_TEXT),
-                    "totaltime" => new external_value(PARAM_INT),
+                    "totaltime" => new external_value(PARAM_TEXT),
                     "progress" => new external_value(PARAM_TEXT),
                     "userUrl" => new external_value(PARAM_TEXT),
                 ])),

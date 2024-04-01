@@ -111,10 +111,9 @@ class ActivityService
 
             $finalLabel = '-';
             $hour = 0;
-            if (!empty($time[0])) {
+            if (!empty($time[0]) && !empty($time[0]->completedat)) {
                 $time = $time[0];
-                $hour = ceil(($time->completedat - $time->firstaccess) / 3600);
-                $finalLabel = $hour . ' ' . ($time->estimatedtime > 1 ? get_string('hours_label', 'block_course_activity_time') : get_string('hour_label', 'block_course_activity_time'));
+                $finalLabel = gmdate('H:i:s', ($time->completedat - $time->firstaccess));
             }
 
             $activity->activityTime = $finalLabel;

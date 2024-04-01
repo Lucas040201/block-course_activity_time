@@ -36,52 +36,46 @@ define([
     };
 
     async function loadStudents(root, seeMore = false) {
-        const params = getParams(root);
-        const students = await Repository.getStudents(params);
-
-        let template = COMPONENTS.STUDENTS;
-
-        if (!seeMore && !students.users.length && !params.search) {
-            template = COMPONENTS.EMPTY;
-        }
-
-        if (!seeMore && !students.users.length && params.search) {
-            disableSeeMoreButton(root, 'see_more');
-            template = COMPONENTS.NOT_FOUND;
-        }
-
-        if (!seeMore) {
-            root.find('.course-activity-time-table-body').empty();
-        }
-
-        const labelHour = await Str.get_string('hour_label', 'block_course_activity_time');
-        const labelHours = await Str.get_string('hours_label', 'block_course_activity_time')
-
-        students.users = students.users.map(user => {
-            if(Number(user.totaltime) === 0) {
-                user.totaltime = '-';
-            } else {
-                user.totaltime = (user.totaltime > 1)? `${user.totaltime} ${labelHours}`: `${user.totaltime} ${labelHour}`;
+        try {
+            const params = getParams(root);
+            const students = await Repository.getStudents(params);
+    
+            let template = COMPONENTS.STUDENTS;
+    
+            if (!seeMore && !students.users.length && !params.search) {
+                template = COMPONENTS.EMPTY;
             }
-
-            return user;
-        })
-
-        const html = await Templates.render(template, {
-            users: students.users,
-            courseid: params.courseid
-        });
-
-        root.find('.total_students').text(students.total)
-
-        root.find('.course-activity-time-table-body').append(html);
-
-        const studentsLength = root.find('.students-item').length;
-
-        if (students.total === studentsLength) {
+    
+            if (!seeMore && !students.users.length && params.search) {
+                disableSeeMoreButton(root, 'see_more');
+                template = COMPONENTS.NOT_FOUND;
+            }
+    
+            if (!seeMore) {
+                root.find('.course-activity-time-table-body').empty();
+            }
+    
+            const html = await Templates.render(template, {
+                users: students.users,
+                courseid: params.courseid
+            });
+    
+            root.find('.total_students').text(students.total)
+    
+            root.find('.course-activity-time-table-body').append(html);
+    
+            const studentsLength = root.find('.students-item').length;
+    
+            if (students.total === studentsLength) {
+                disableSeeMoreButton(root);
+            } else if (root.find('.see_more').hasClass('hidden') && students.total > studentsLength) {
+                activeSeeMoreButton(root);
+            }
+        } catch (error) {
+            const html = await Templates.render(COMPONENTS.EMPTY);
             disableSeeMoreButton(root);
-        } else if (root.find('.see_more').hasClass('hidden') && students.total > studentsLength) {
-            activeSeeMoreButton(root);
+            root.find('.course-activity-time-table-body').append(html);
+            console.log(error);
         }
     }
 
