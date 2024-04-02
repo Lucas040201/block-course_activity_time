@@ -105,7 +105,9 @@ class CourseActivityTimeStudentRepository extends RepositoryBase
 
         $sql .= "order by mu.firstname, mu.lastname asc";
 
-        return [array_values($this->db->get_records_sql($sql, $params, $offset, $limit)), $this->db->count_records_sql($sqlCount, $params)];
+        return [array_values($this->db->get_records_sql($sql, $params, $offset, $limit)), $this->db->count_records_sql($sqlCount, [
+            'courseid' => $courseid
+        ])];
     }
 
     public function getUserTime(int $userId, array $activitiesIds)
