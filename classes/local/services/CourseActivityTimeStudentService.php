@@ -126,7 +126,7 @@ class CourseActivityTimeStudentService
 
         return [
             'page' => $page,
-            'total' => $total,
+            'total' => 0,
             'users' => array_map(function ($user) use ($course) {
                 $user->totaltime = gmdate('H:i:s', ($user->totaltime));
                 $user->progress = (int) \core_completion\progress::get_course_progress_percentage($course, $user->id) . '%';
