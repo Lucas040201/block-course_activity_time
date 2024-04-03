@@ -61,10 +61,10 @@ class CourseActivityTimeStudentRepository extends RepositoryBase
         $sql = "
         select 
             mu.id,
-            (mu.firstname || ' ' || mu.lastname) as fullname,
+            concat(mu.firstname, ' ', mu.lastname) as fullname,
             mu.email,
             (
-                select sum((mcats.completedat - mcats.firstaccess)) from {{$this->getTable()}} mcats inner join {course_activity_time_course} mcatc on mcats.courseactivityid = mcatc.id where mcatc.courseid = :courseactivityid and completedat is not null and firstaccess is not null and mu.id = mcats.userid
+                select SUM(TIMESTAMPDIFF(SECOND, mcats.firstaccess, mcats.completedat)) from {{$this->getTable()}} mcats inner join {course_activity_time_course} mcatc on mcats.courseactivityid = mcatc.id where mcatc.courseid = :courseactivityid and completedat is not null and firstaccess is not null and mu.id = mcats.userid
             ) as totaltime
         from {user} mu 
             inner join {user_enrolments} mue on mu.id = mue.userid 
@@ -95,14 +95,14 @@ class CourseActivityTimeStudentRepository extends RepositoryBase
         }
 
         if(!empty($from) && !empty($to)) {
-            $sql .= " and to_timestamp(mcc.timecompleted)::date between '{$this->db->sql_like_escape($from)}' and '{$this->db->sql_like_escape($to)}' ";
-            $sqlCount .= " and to_timestamp(mcc.timecompleted)::date between '{$this->db->sql_like_escape($from)}' and '{$this->db->sql_like_escape($to)}' ";
+            $sql .= " and DATE(FROM_UNIXTIME(mcc.timecompleted)) BETWEEN  '{$this->db->sql_like_escape($from)}' and '{$this->db->sql_like_escape($to)}' ";
+            $sqlCount .= " and DATE(FROM_UNIXTIME(mcc.timecompleted)) BETWEEN  '{$this->db->sql_like_escape($from)}' and '{$this->db->sql_like_escape($to)}' ";
         } else if(!empty($from)) {
-            $sql .= " and to_timestamp(mcc.timecompleted)::date >= '{$this->db->sql_like_escape($from)}' ";
-            $sqlCount .= " and to_timestamp(mcc.timecompleted)::date >= '{$this->db->sql_like_escape($from)}' ";
+            $sql .= " and DATE(FROM_UNIXTIME(mcc.timecompleted)) >= '{$this->db->sql_like_escape($from)}' ";
+            $sqlCount .= " and DATE(FROM_UNIXTIME(mcc.timecompleted)) >= '{$this->db->sql_like_escape($from)}' ";
         } else if(!empty($to)) {
-            $sql .= " and to_timestamp(mcc.timecompleted)::date <= '{$this->db->sql_like_escape($to)}' ";
-            $sqlCount .= " and to_timestamp(mcc.timecompleted)::date <= '{$this->db->sql_like_escape($to)}' ";
+            $sql .= " and DATE(FROM_UNIXTIME(mcc.timecompleted)) <= '{$this->db->sql_like_escape($to)}' ";
+            $sqlCount .= " and DATE(FROM_UNIXTIME(mcc.timecompleted)) <= '{$this->db->sql_like_escape($to)}' ";
         }
 
         $sql .= "order by mu.firstname, mu.lastname asc";
