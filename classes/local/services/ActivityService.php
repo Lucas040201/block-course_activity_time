@@ -90,10 +90,10 @@ class ActivityService
             return $past + $current->estimatedtime;
         }, 0);
 
-        return [$items, $this->getCalculatedTime($total)];
+        return [$items, self::getCalculatedTime($total)];
     }
 
-    private function getCalculatedTime($seconds)
+    public static function getCalculatedTime($seconds)
     {
         $hours = floor($seconds / 3600);
         $minutes = floor(($seconds / 60) % 60);
@@ -138,7 +138,7 @@ class ActivityService
             if(!empty($userActivityInfo) && $userActivityInfo = $userActivityInfo[0]) {
                 if(!empty($userActivityInfo->completedat)) {
                     $time = ($userActivityInfo->completedat - $userActivityInfo->firstaccess);
-                    $formatedTime = $this->getCalculatedTime($time);
+                    $formatedTime = self::getCalculatedTime($time);
                 }
             }
             $data->time = $time;
@@ -150,13 +150,13 @@ class ActivityService
             return $past + $current->estimatedtime;
         }, 0);
 
-        $totalCourseFormatted = $this->getCalculatedTime($totalCourse);
+        $totalCourseFormatted = self::getCalculatedTime($totalCourse);
 
         $totalUser = array_reduce($formattedUserActivityCompletion, function($past, $current) {
             return $past + $current->time;
         }, 0);
 
-        $totalUserFormatted = $this->getCalculatedTime($totalUser);
+        $totalUserFormatted = self::getCalculatedTime($totalUser);
 
         $withinTime = $totalCourse >= $totalUser;
 
