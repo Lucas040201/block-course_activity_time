@@ -64,7 +64,7 @@ class CourseActivityTimeStudentRepository extends RepositoryBase
             concat(mu.firstname, ' ', mu.lastname) as fullname,
             mu.email,
             (
-                select SUM(TIMESTAMPDIFF(SECOND, mcats.firstaccess, mcats.completedat)) from {{$this->getTable()}} mcats inner join {course_activity_time_course} mcatc on mcats.courseactivityid = mcatc.id where mcatc.courseid = :courseactivityid and completedat is not null and firstaccess is not null and mu.id = mcats.userid
+                select sum((mcats.completedat - mcats.firstaccess)) from {{$this->getTable()}} mcats inner join {course_activity_time_course} mcatc on mcats.courseactivityid = mcatc.id where mcatc.courseid = :courseactivityid and completedat is not null and firstaccess is not null and mu.id = mcats.userid
             ) as totaltime
         from {user} mu 
             inner join {user_enrolments} mue on mu.id = mue.userid 
@@ -107,7 +107,7 @@ class CourseActivityTimeStudentRepository extends RepositoryBase
 
         $sql .= "order by mu.firstname, mu.lastname asc";
 
-        return [array_values($this->db->get_records_sql($sql, $params, $offset, $limit)), $this->db->get_record_sql($sqlCount, $params)];
+        return [array_values($this->db->get_records_sql($sql, $params, $offset, $limit)), $this->db->count_records_sql($sqlCount, $params)];
     }
 
     public function getUserTime(int $userId, array $activitiesIds)

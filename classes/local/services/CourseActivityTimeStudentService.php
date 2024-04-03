@@ -126,7 +126,7 @@ class CourseActivityTimeStudentService
 
         return [
             'page' => $page,
-            'total' => $total->count,
+            'total' => $total,
             'users' => array_map(function ($user) use ($course) {
                 $user->totaltime = ActivityService::getCalculatedTime($user->totaltime);
                 $user->progress = (int) \core_completion\progress::get_course_progress_percentage($course, $user->id) . '%';
