@@ -39,10 +39,14 @@ class edit_course_activities implements renderable, templatable
     /** @var stdClass */
     private $course;
 
-    public function __construct(stdClass $course, array $activities = [])
+    /** @var string */
+    private $totalTime;
+
+    public function __construct(stdClass $course, string $totalTime, array $activities = [])
     {
         $this->activities = $activities;
         $this->course = $course;
+        $this->totalTime = $totalTime;
     }
 
     public function export_for_template(renderer_base $output)
@@ -50,6 +54,7 @@ class edit_course_activities implements renderable, templatable
         return [
             'activities' => $this->activities,
             'course' => $this->course,
+            'totalTime' => $this->totalTime,
         ];
     }
 

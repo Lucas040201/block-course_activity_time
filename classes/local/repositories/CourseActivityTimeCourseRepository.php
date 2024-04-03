@@ -56,4 +56,11 @@ SQL;
             'courseid' => $courseId
         ]);
     }
+
+    public function getConfiguredActivities(array $activitiesId)
+    {
+        $join = join(', ', $activitiesId);
+        $sql = "select * from {{$this->getTable()}} where estimatedtime is not null and moduleid in ($join)";
+        return $this->db->get_records_sql($sql);
+    }
 }

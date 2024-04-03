@@ -23,12 +23,12 @@ $url = new moodle_url('/blocks/course_activity_time/edit_course_activities.php?i
 $PAGE->set_context(context_user::instance($USER->id));
 $PAGE->set_url($url);
 $PAGE->set_title(get_string('page_title_edit', 'block_course_activity_time'));
+$PAGE->requires->js(new moodle_url('https://unpkg.com/vanilla-masker@1.1.1/build/vanilla-masker.min.js'), true);
 $output = $PAGE->get_renderer('block_course_activity_time');
-
 $service = ActivityService::getService();
-$activities = $service->getActivities($course->id, $USER->id);
+list($activities, $totalTime) = $service->getActivities($course->id, $USER->id);
 
-$page = new edit_course_activities($course, $activities);
+$page = new edit_course_activities($course, $totalTime, $activities);
 
 echo $output->doctype();
 echo $output->header();

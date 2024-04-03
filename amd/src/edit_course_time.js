@@ -25,14 +25,18 @@ define([
     "jquery",
     "core/templates",
     "core/str",
-    "block_course_activity_time/repository"
+    "block_course_activity_time/repository",
 ], function ($, Templates, Str, Repository) {
 
     async function sendData(target, root) {
         const value = target.val();
         const container = $(target).parent();
+
+        const [hours, minutes, seconds] = value.split(':'); 
+        const totalSeconds = (+hours) * 60 * 60 + (+minutes) * 60 + (+seconds);
+
         Repository.changeTime({
-            hours: Number(value),
+            hours: Number(totalSeconds),
             activityId: Number(container.attr('data-activity')),
             courseId: Number(root.attr('data-courseid'))
         }).then(() => {
@@ -40,12 +44,7 @@ define([
             const span = document.createElement('span');
             span.classList.add('add-time');
     
-            let hoursLabel = 'hora';
-            if(value > 1) {
-                hoursLabel = 'horas';
-            }
-    
-            span.innerText = `${value} ${hoursLabel}`;
+            span.innerText = `${value}`;
             container.append(span)
             calculateTotalTime(root);
             addDoubleClick(root);
@@ -58,9 +57,12 @@ define([
         const currentHour = target.find('.time').text();
         const input = document.createElement('input');
         input.classList.add('insert-time');
-        input.setAttribute('type', 'number');
+        input.setAttribute('type', 'text');
+        input.setAttribute('placeholder', "H:M:S");
         const container = $(target).parent();
         container.append(input);
+        VMasker(input).unMask();
+        VMasker(input).maskPattern("99:99:99");
         $(input).val(currentHour);
         target.remove();
         addInputEvents(root);
@@ -104,6 +106,7 @@ define([
         addInputEvents(root);
         addDoubleClick(root);
         calculateTotalTime(root);
+        VMasker(document.querySelectorAll('.insert-time')).maskPattern("99:99:99");
     }
 
     return {

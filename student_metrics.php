@@ -41,7 +41,7 @@ $PAGE->set_url($url);
 $PAGE->set_title(get_string('page_title_your_metrics', 'block_course_activity_time'));
 $output = $PAGE->get_renderer('block_course_activity_time');
 
-$page = new student_metrics($activities, $totalTime, $withinTime, $totalCourse->total, $course);
+$page = new student_metrics($activities, $totalTime, $withinTime, $totalCourse, $course);
 
 echo $output->doctype();
 echo $output->header();

@@ -68,8 +68,8 @@ class ActivityService
             }
         }
         $coursesTime = $this->courseActivityTimeRepository->getCoursesTime($activitiesId);
-
-        return array_map(function ($activity) use ($coursesTime) {
+        
+        $items = array_map(function ($activity) use ($coursesTime) {
             $time = array_values(array_filter($coursesTime, function ($courseTime) use ($activity) {
                 return $courseTime->moduleid === $activity->id;
             }));
@@ -78,13 +78,27 @@ class ActivityService
 
             if (!empty($time[0])) {
                 $time = $time[0];
-                $finalLabel = '<span class="time">'. $time->estimatedtime . '</span> '. ($time->estimatedtime > 1 ? get_string('hours_label', 'block_course_activity_time') : get_string('hour_label', 'block_course_activity_time'));
+                $finalLabel = gmdate('H:i:s', ($time->estimatedtime));
             }
 
             $activity->time = $finalLabel;
 
             return $activity;
         }, $activitiesToFormat);
+
+        $total = array_reduce($coursesTime, function($past, $current) {
+            return $past + $current->estimatedtime;
+        }, 0);
+
+        return [$items, $this->getCalculatedTime($total)];
+    }
+
+    private function getCalculatedTime($seconds)
+    {
+        $hours = floor($seconds / 3600);
+        $minutes = floor(($seconds / 60) % 60);
+        $seconds = $seconds % 60;
+        return "$hours:$minutes:$seconds";
     }
 
     public function getActivitiesForUser(int $userId, int $courseId)
@@ -102,33 +116,51 @@ class ActivityService
                 $activitiesToFormat[] = $item;
             }
         }
+
+        $courseConfig = $this->courseActivityTimeRepository->getConfiguredActivities($activitiesId);
+
         $userTime = $this->courseActivityTimeStudentsRepository->getUserTime($userId, $activitiesId);
-        $items = array_map(function ($activity) use ($userTime) {
-            $time = array_values(array_filter($userTime, function ($item) use ($activity) {
-                return $item->moduleid === $activity->id;
+
+        $formattedUserActivityCompletion = array_map(function ($activity) use ($userTime, $activitiesToFormat) {
+            $activityInfo = array_values(array_filter($activitiesToFormat, function ($item) use ($activity) {
+                return (int)$item->id === (int)$activity->moduleid;
+            }))[0];
+
+            $userActivityInfo = array_values(array_filter($userTime, function ($user) use($activity) {
+                return (int)$activity->id === (int)$user->courseactivityid;
             }));
 
-
-            $finalLabel = '-';
-            $hour = 0;
-            if (!empty($time[0]) && !empty($time[0]->completedat)) {
-                $time = $time[0];
-                $finalLabel = gmdate('H:i:s', ($time->completedat - $time->firstaccess));
+            $data = new stdClass();
+            $data->id = $activityInfo->id;
+            $data->name = $activityInfo->name;
+            $time = 0;
+            $formatedTime = '-';
+            if(!empty($userActivityInfo) && $userActivityInfo = $userActivityInfo[0]) {
+                if(!empty($userActivityInfo->completedat)) {
+                    $time = ($userActivityInfo->completedat - $userActivityInfo->firstaccess);
+                    $formatedTime = $this->getCalculatedTime($time);
+                }
             }
+            $data->time = $time;
+            $data->formatedTime = $formatedTime;
+            return $data;
+        }, $courseConfig);
 
-            $activity->activityTime = $finalLabel;
-            $activity->time = $hour;
+        $totalCourse = array_reduce($courseConfig, function($past, $current) {
+            return $past + $current->estimatedtime;
+        }, 0);
 
-            return $activity;
-        }, $activitiesToFormat);
+        $totalCourseFormatted = $this->getCalculatedTime($totalCourse);
 
-        $totalCourse = $this->courseActivityTimeRepository->getCourseEstimatedTime($courseId);
-        $total = array_reduce($items, function($past, $current) {
+        $totalUser = array_reduce($formattedUserActivityCompletion, function($past, $current) {
             return $past + $current->time;
         }, 0);
-        $withinTime = $totalCourse->total >= $total;
 
-        return [$items, $total, $withinTime, $totalCourse];
+        $totalUserFormatted = $this->getCalculatedTime($totalUser);
+
+        $withinTime = $totalCourse >= $totalUser;
+
+        return [array_values($formattedUserActivityCompletion), $totalUserFormatted, $withinTime, $totalCourseFormatted];
     }
 
 

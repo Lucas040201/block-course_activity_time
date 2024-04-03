@@ -67,7 +67,7 @@ class CourseActivityTimeStudentRepository extends RepositoryBase
 
         $sqlCount = "
         select 
-            count(mu.*)
+            count(*)
         from mdl_user mu 
             inner join {user_enrolments} mue on mu.id = mue.userid 
             inner join {enrol} me on me.id = mue.enrolid and me.courseid = :courseid";

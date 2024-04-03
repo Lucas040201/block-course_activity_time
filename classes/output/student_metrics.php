@@ -35,16 +35,16 @@ class student_metrics implements renderable, templatable
 {
     /** @var array */
     private $activities;
-    /** @var int */
+    /** @var string */
     private $totalTime;
     /** @var bool */
     private $withinTime;
-    /** @var int */
+    /** @var string */
     private $totalCourse;
     /** @var stdClass */
     private $course;
 
-    public function __construct(array $activities, int $totalTime, bool $withinTime, int $totalCourse, stdClass $course)
+    public function __construct(array $activities, string $totalTime, bool $withinTime, string $totalCourse, stdClass $course)
     {
         $this->activities = $activities;
         $this->totalTime = $totalTime;
@@ -55,21 +55,11 @@ class student_metrics implements renderable, templatable
 
     public function export_for_template(renderer_base $output)
     {
-        $totalHourCourseLabel = '-';
-        if($this->totalCourse > 0) {
-            $totalHourCourseLabel = $this->totalCourse . ' ' . ($this->totalCourse > 1? get_string('hours_label', 'block_course_activity_time') : get_string('hour_label', 'block_course_activity_time'));
-        }
-        
-        $totalHourUserLabel = '-';
-        if($this->totalTime > 0) {
-            $totalHourUserLabel = $this->totalTime . ' ' . ($this->totalTime > 1? get_string('hours_label', 'block_course_activity_time') : get_string('hour_label', 'block_course_activity_time'));
-        }
-
         return [
         'activities' => $this->activities,
-        'totalTime' => $totalHourUserLabel,
+        'totalTime' => $this->totalTime,
         'withinTime' => $this->withinTime,
-        'totalCourse' => $totalHourCourseLabel,
+        'totalCourse' => $this->totalCourse,
         'course' => $this->course,
        ];
     }

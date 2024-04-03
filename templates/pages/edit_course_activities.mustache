@@ -2,7 +2,7 @@
     <h2>{{#str}}defining_time, block_course_activity_time{{/str}}</h2>
     <div class="d-flex justify-content-between">
         <h3 class="course-name">{{course.fullname}}</h3>
-        <p>{{#str}}total_workload, block_course_activity_time{{/str}}<span class="total-time"></span></p>
+        <p>{{#str}}total_workload, block_course_activity_time{{/str}}<span class="total-time"> {{totalTime}}</span></p>
     </div>
     <div class="pt-3">
         <div class="course-activity-time-table-head row">
@@ -26,7 +26,7 @@
                         </span>
                     {{/time}}
                     {{^time}}
-                        <input type="number" class="insert-time">
+                        <input type="text" class="insert-time">
                     {{/time}}
                     </div>
                 </div>

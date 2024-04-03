@@ -5,14 +5,14 @@
     </div>
     <div class="row pt-3 pb-3">
         <div class="col-md-4 text-center">
-            <b>
+            <h4>
                 {{#withinTime}}
                     {{#str}} within_time, block_course_activity_time {{/str}}
                 {{/withinTime}}
                 {{^withinTime}}
                     {{#str}} not_within_time, block_course_activity_time {{/str}}
                 {{/withinTime}}
-            </b>
+            </h4>
         </div>
         <div class="col-md-4 text-center">
             {{#str}} total_course, block_course_activity_time {{/str}} <b>{{totalCourse}}</b>
@@ -37,7 +37,7 @@
                         {{name}}
                     </div>
                     <div class="col-6 text-center">
-                        {{activityTime}}
+                        {{formatedTime}}
                     </div>
                 </div>
             {{/activities}}
