@@ -26,6 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 use core\event\course_module_viewed;
 use \core\event\course_module_completion_updated;
+use \mod_assign\event\assessable_submitted;
 
 $observers = [
     [
@@ -34,6 +35,10 @@ $observers = [
     ],
     [
         'eventname' => course_module_completion_updated::class,
+        'callback' => '\block_course_activity_time\observer\student_view_monitoring::complete_activity',
+    ],
+    [
+        'eventname' => assessable_submitted::class,
         'callback' => '\block_course_activity_time\observer\student_view_monitoring::complete_activity',
     ],
 ];

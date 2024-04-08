@@ -71,6 +71,15 @@ class CourseActivityTimeStudentService
             $userActivity = new stdClass();
         }
 
+        if(!empty($userActivity->firstaccess)) {
+            $currentTime = time();
+            $timeDiff = floor(($currentTime - $userActivity->firstaccess) / 60);
+
+            if($timeDiff <= 15) {
+                return;
+            }
+        }
+
         $userActivity->userid = $data['userid'];
         $userActivity->courseactivityid = $courseActivity->id;
         $userActivity->firstaccess = time();
