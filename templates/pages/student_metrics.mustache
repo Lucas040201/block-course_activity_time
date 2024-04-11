@@ -6,12 +6,15 @@
     <div class="row pt-3 pb-3">
         <div class="col-md-4 text-center">
             <h4>
-                {{#withinTime}}
-                    {{#str}} within_time, block_course_activity_time {{/str}}
-                {{/withinTime}}
-                {{^withinTime}}
-                    {{#str}} not_within_time, block_course_activity_time {{/str}}
-                {{/withinTime}}
+                {{#bigger}}
+                    {{#str}} bigger_time, block_course_activity_time {{/str}}
+                {{/bigger}}
+                {{#smaller}}
+                    {{#str}} smaller_time, block_course_activity_time {{/str}}
+                {{/smaller}}
+                {{#needHelp}}
+                    {{#str}} need_help_time, block_course_activity_time {{/str}}
+                {{/needHelp}}
             </h4>
         </div>
         <div class="col-md-4 text-center">

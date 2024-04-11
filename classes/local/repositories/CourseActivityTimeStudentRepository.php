@@ -129,4 +129,43 @@ class CourseActivityTimeStudentRepository extends RepositoryBase
             'userid' => $userId
         ]));
     }
+
+    public function getCalculatedUserTime(int $userId, array $activitiesIds)
+    {
+        $activitiesIds = join(', ', $activitiesIds);
+
+        $sql = "
+            select 
+                mcats.id,
+                mcatc.moduleid,
+                (
+                    select sum((mcats2.completedat - mcats2.firstaccess)) from {{$this->getTable()}} mcats2 inner join {course_activity_time_course} mcatc2 on mcats2.courseactivityid = mcatc2.id where mcatc2.courseid = mcatc.courseid and completedat is not null and firstaccess is not null and mcats2.userid = mu.id
+                ) as totaltime
+            from {user} mu
+            inner join {{$this->getTable()}} mcats on mcats.userid = mu.id
+            inner join {course_activity_time_course} mcatc on mcats.courseactivityid = mcatc.id
+            where mcatc.moduleid in ($activitiesIds) and mu.id = :userid
+        ";
+
+        return array_values($this->db->get_records_sql($sql, [
+            'userid' => $userId
+        ]));
+    }
+
+    public function getUsersEnrolledInCourseToExport(int $courseid)
+    {
+        $sql = "
+            select 
+                mu.id,
+                concat(mu.firstname, ' ', mu.lastname) as fullname,
+                mu.email
+            from {user} mu
+            inner join {user_enrolments} mue on mu.id = mue.userid 
+            inner join {enrol} me on me.id = mue.enrolid and me.courseid = :courseid
+        ";
+
+        return array_values($this->db->get_records_sql($sql, [
+            'courseid' => $courseid
+        ]));
+    }
 }

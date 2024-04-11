@@ -57,3 +57,7 @@ $string['total_workload'] = 'Carga Horária total:';
 $string['unauthorized'] = 'Não autorizado';
 $string['not_enrolled'] = 'usuário não matriculado';
 $string['your_metrics'] = 'Veja as suas métricas para o curso:';
+$string['export'] = 'Exportar';
+$string['bigger_time'] = 'Seu comprometimento com as atividades do curso é impressionante';
+$string['smaller_time'] = 'Você está dentro do cronograma planejado para as atividades do curso;';
+$string['need_help_time'] = 'Notamos que você não tem dedicado o tempo esperado às atividades do curso recentemente. Você precisa de ajuda?';

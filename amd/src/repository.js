@@ -43,9 +43,21 @@ define(["jquery", "core/ajax"], function ($, Ajax) {
             },
         ])[0];
     }
-    
+
+    function exportData(data) {
+        return Ajax.call([
+            {
+                methodname: "block_course_activity_time_export_progress",
+                args: {
+                    ...data
+                },
+            },
+        ])[0];
+    }
+
     return {
         changeTime,
         getStudents,
+        exportData,
     };
 });

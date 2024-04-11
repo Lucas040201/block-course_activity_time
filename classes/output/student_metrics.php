@@ -38,17 +38,23 @@ class student_metrics implements renderable, templatable
     /** @var string */
     private $totalTime;
     /** @var bool */
-    private $withinTime;
+    private $bigger; 
+    /** @var bool */
+    private $smaller; 
+    /** @var bool */
+    private $needHelp;
     /** @var string */
     private $totalCourse;
     /** @var stdClass */
     private $course;
 
-    public function __construct(array $activities, string $totalTime, bool $withinTime, string $totalCourse, stdClass $course)
+    public function __construct(array $activities, string $totalTime, bool $bigger, bool $smaller, bool $needHelp, string $totalCourse, stdClass $course)
     {
         $this->activities = $activities;
         $this->totalTime = $totalTime;
-        $this->withinTime = $withinTime;
+        $this->bigger = $bigger;
+        $this->smaller = $smaller;
+        $this->needHelp = $needHelp;
         $this->totalCourse = $totalCourse;
         $this->course = $course;
     }
@@ -58,7 +64,9 @@ class student_metrics implements renderable, templatable
         return [
         'activities' => $this->activities,
         'totalTime' => $this->totalTime,
-        'withinTime' => $this->withinTime,
+        'bigger' => $this->bigger,
+        'smaller' => $this->smaller,
+        'needHelp' => $this->needHelp,
         'totalCourse' => $this->totalCourse,
         'course' => $this->course,
        ];

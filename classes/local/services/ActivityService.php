@@ -95,6 +95,10 @@ class ActivityService
 
     public static function getCalculatedTime($seconds)
     {
+        if(empty($seconds)) {
+            return '00:00:00';
+        }
+
         $hours = floor($seconds / 3600);
         $minutes = floor(($seconds / 60) % 60);
         $seconds = $seconds % 60;
@@ -157,10 +161,12 @@ class ActivityService
         }, 0);
 
         $totalUserFormatted = self::getCalculatedTime($totalUser);
+        $bigger = $totalCourse < $totalUser;
+        $marginTime = $totalCourse - ($totalCourse * 0.1);
+        $smaller = $marginTime < $totalUser && !$bigger;
+        $needHelp = $totalUser < $marginTime && !$smaller;
 
-        $withinTime = $totalCourse >= $totalUser;
-
-        return [array_values($formattedUserActivityCompletion), $totalUserFormatted, $withinTime, $totalCourseFormatted];
+        return [array_values($formattedUserActivityCompletion), $totalUserFormatted, $bigger, $smaller, $needHelp, $totalCourseFormatted];
     }
 
 

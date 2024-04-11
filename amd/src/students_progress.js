@@ -75,7 +75,6 @@ define([
             const html = await Templates.render(COMPONENTS.EMPTY);
             disableSeeMoreButton(root);
             root.find('.course-activity-time-table-body').append(html);
-            console.log(error);
         }
     }
 
@@ -109,6 +108,90 @@ define([
         }
     }
 
+    function exportCsv(root) {
+
+        const download = function (data) {
+            const blob = new Blob([data], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob)
+            const a = document.createElement('a')
+            a.setAttribute('href', url)
+            const courseName = root.find('.course-name').text();
+            a.setAttribute('download', `${courseName}_${Math.floor(Date.now() / 1000)}.csv`);
+            a.click()
+        }
+
+        const csvmaker = function (data, header = false) {
+            csvRows = [];
+            const values = Object.values(data);
+            csvRows.push(values.join(';'));
+            return csvRows.join('\n')
+        }
+
+        const get = async function () {
+            const params = getParams(root);
+
+            const progress = await Repository.exportData({
+                courseId: Number(params.courseid),
+            });
+
+            const acitivitiesNames = progress.activities.map(activity => {
+                return activity.name;
+            });
+            const csvHeader = ['Nome', 'E-mail', ...acitivitiesNames, 'Total'];
+
+            const formattedCsvHeader = csvHeader.join(';');
+            
+            const formattedUsers = progress.users.map(user => {
+                user.total = user.activities.reduce((past, current) => {
+                    return past + Number(current.totaltime)
+                }, 0)
+                return user;
+            })
+
+            const row = [];
+            for(const user of formattedUsers) {
+                const userInfo = {
+                    name: user.fullname,
+                    email: user.email,
+                }
+    
+                const defaultLabel = 'activity';
+                const userActivities = user.activities.map(activity => {
+                    return getFormattedTime(activity.totaltime)
+                });
+
+                let itemsCount = 0;
+                const activitiesObject = {}
+                while(itemsCount <= acitivitiesNames.length - 1) {
+                    activitiesObject[`${defaultLabel}${itemsCount}`] = userActivities[itemsCount] ?? '00:00:00';
+                    itemsCount++;
+                }
+
+                const final = {...userInfo, ...activitiesObject, total: getFormattedTime(user.total)};
+                row.push(final);
+            }
+
+            let finalRow = '';
+
+            row.forEach((item, index) => {
+                finalRow += "\n" + csvmaker(item);
+            })
+
+            const finalCsv = formattedCsvHeader + finalRow;
+
+            download(finalCsv);
+        }
+        root.find('.export-data').on('click', get);
+    }
+    function getFormattedTime(totaltime) {
+        if(!totaltime) {
+            return '00:00:00';
+        }
+        const hours = Math.floor(totaltime / 3600);
+        const minutes = Math.floor((totaltime / 60) % 60);
+        const seconds = totaltime % 60;
+        return `${hours}:${minutes}:${seconds}`;
+    }
     async function init(root) {
         root = $(root);
         await loadStudents(root);
@@ -131,6 +214,8 @@ define([
         root.find('[name="to"]').on('change', event => {
             loadStudents(root);
         });
+
+        exportCsv(root);
     }
 
     return {

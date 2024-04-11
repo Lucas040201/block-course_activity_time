@@ -33,7 +33,7 @@ if(!empty($userid)) {
     $userUrl = '&userid=' . $userid;
 }
 
-list($activities, $totalTime, $withinTime, $totalCourse) = ActivityService::getService()->getActivitiesForUser($userid, $course->id);
+list($activities, $totalTime, $bigger, $smaller, $needHelp, $totalCourse) = ActivityService::getService()->getActivitiesForUser($userid, $course->id);
 
 $url = new moodle_url('/blocks/course_activity_time/student_metrics.php?id=' . $id . $userUrl);
 $PAGE->set_context(context_user::instance($USER->id));
@@ -41,7 +41,7 @@ $PAGE->set_url($url);
 $PAGE->set_title(get_string('page_title_your_metrics', 'block_course_activity_time'));
 $output = $PAGE->get_renderer('block_course_activity_time');
 
-$page = new student_metrics($activities, $totalTime, $withinTime, $totalCourse, $course);
+$page = new student_metrics($activities, $totalTime, $bigger, $smaller, $needHelp, $totalCourse, $course);
 
 echo $output->doctype();
 echo $output->header();

@@ -57,3 +57,7 @@ $string['total_workload'] = 'Total workload:';
 $string['unauthorized'] = 'Unauthorized';
 $string['not_enrolled'] = 'Not Enrolled';
 $string['your_metrics'] = 'See your metrics for the course:';
+$string['export'] = 'Export';
+$string['bigger_time'] = 'Your commitment to course activities is impressive';
+$string['smaller_time'] = 'You are within the planned timetable for course activities;';
+$string['need_help_time'] = 'We noticed that you haven\'t dedicated the expected amount of time to course activities recently. You need help?';

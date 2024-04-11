@@ -25,7 +25,9 @@
 namespace block_course_activity_time\local\services;
 
 use block_course_activity_time\local\repositories\CourseActivityTimeCourseRepository;
-
+use block_course_activity_time\local\repositories\CourseActivityTimeStudentRepository;
+use block_course_activity_time\local\repositories\ActivityRepository;
+use RuntimeException;
 use stdClass;
 
 class CourseActivityTimeService
@@ -37,9 +39,18 @@ class CourseActivityTimeService
     /** @var CourseActivityTimeCourseRepository */
     private $courseActivityTimeRepository;
 
+    /** @var ActivityRepository */
+    private $activityRepository;
+
+    /** @var CourseActivityTimeStudentRepository */
+    private $courseActivityTimeStudentRepository;
+
     public function __construct()
     {
         $this->courseActivityTimeRepository = new CourseActivityTimeCourseRepository();
+        $this->activityRepository = new ActivityRepository();
+        $this->courseActivityTimeStudentRepository = new CourseActivityTimeStudentRepository();
+        
     }
 
     public function changeTime(int $courseId, int $activityId, int $hours)
@@ -55,6 +66,44 @@ class CourseActivityTimeService
         $courseActivity->estimatedtime = $hours;
 
         $this->courseActivityTimeRepository->save($courseActivity);
+    }
+
+
+    public function exportData(int $courseId)
+    {
+        $course = get_course($courseId);
+        
+        if(empty($course)) {
+            throw new RuntimeException('Course Not Found', 404);
+        }
+
+        list($formattedActivities, $activitiesId) = $this->getActivitiesIdAndName($course->id);
+
+        $usersEnrolledInCourse = $this->courseActivityTimeStudentRepository->getUsersEnrolledInCourseToExport($course->id);
+
+        $usersEnrolledInCourse = array_map(function($user) use ($activitiesId) {
+            $user->activities = $this->courseActivityTimeStudentRepository->getCalculatedUserTime($user->id, $activitiesId);
+            return $user;
+        }, $usersEnrolledInCourse);
+
+        return ['activities' => $formattedActivities, 'users' => $usersEnrolledInCourse];
+    }
+
+    private function getActivitiesIdAndName(int $courseId)
+    {
+        $mods = get_course_mods($courseId);
+        $activitiesToFormat = [];
+        $activitiesId = [];
+        foreach($mods as $cm) {
+            $modInfo = $this->activityRepository->getCourseActivity($cm->modname, $cm->instance);
+            $item = new stdClass();
+            $item->id = $cm->id;
+            $item->name = $modInfo->name;
+            $activitiesId[] = $cm->id;
+            $activitiesToFormat[] = $item;
+        }
+
+        return [$activitiesToFormat, $activitiesId];
     }
 
 

@@ -132,6 +132,9 @@ class CourseActivityTimeStudentService
 
         $course = get_course($courseid);
 
+        if(empty($course)) {
+            throw new \RuntimeException('Course Not Found', 404);
+        }
 
         return [
             'page' => $page,

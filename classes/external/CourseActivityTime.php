@@ -170,4 +170,70 @@ class CourseActivityTime extends external_api
             throw new Exception($exception->getMessage() . ':' . $exception->getTraceAsString());
         }
     }
+
+            /**
+     * Describes the parameters for change_time.
+     *
+     * @return external_function_parameters
+     * @since Moodle 3.3
+     */
+    public static function export_progress_parameters(): external_function_parameters
+    {
+        return new external_function_parameters(
+            array(
+                'courseId' => new external_value(PARAM_INT, 'Course id', VALUE_REQUIRED),
+            )
+        );
+    }
+
+
+
+    /**
+     * Describes the change_time return value.
+     *
+     * @return external_function_parameters
+     * @since Moodle 3.3
+     */
+    public static function export_progress_returns(): external_single_structure
+    {
+        return new external_single_structure(
+            array(
+                'activities' => new external_multiple_structure(new external_single_structure([
+                    'id' => new external_value(PARAM_INT, 'Module id'),
+                    'name' => new external_value(PARAM_TEXT, 'Activity Name'),
+                ])),
+                'users' => new external_multiple_structure(new external_single_structure(
+                    [
+                        'id' => new external_value(PARAM_INT, 'User Id'),
+                        'fullname' => new external_value(PARAM_TEXT, 'User fullname'),
+                        'email' => new external_value(PARAM_TEXT, 'User Email'),
+                        'activities' => new external_multiple_structure(
+                            new external_single_structure([
+                                'id' => new external_value(PARAM_INT, 'Activity with time id'),
+                                'moduleid' => new external_value(PARAM_INT, 'Module id'),
+                                'totaltime' => new external_value(PARAM_TEXT, 'Total time in activity', VALUE_OPTIONAL),
+                            ])
+                        ),
+                    ]
+                ))
+            )
+        );
+    }
+
+    public static function export_progress(int $courseId)
+    {
+        try {
+            return CourseActivityTimeService::getService()->exportData($courseId);
+        } catch(Throwable $exception){
+            $statusCode = 500;
+
+            if ($exception instanceof RuntimeException || $exception instanceof invalid_parameter_exception) {
+                $statusCode = 400;
+            }
+
+            http_response_code($statusCode);
+
+            throw new Exception($exception->getMessage() . ':' . $exception->getTraceAsString());
+        }
+    }
 }

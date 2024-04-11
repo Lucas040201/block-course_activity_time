@@ -39,6 +39,13 @@ $functions = [
         'type' => 'read',
         'ajax' => true
     ],
+    'block_course_activity_time_export_progress' => [
+        'classname' => \block_course_activity_time\external\CourseActivityTime::class,
+        'methodname' => 'export_progress',
+        'description' => 'Export progress of all users',
+        'type' => 'read',
+        'ajax' => true
+    ],
 ];
 
 $services = array(
@@ -46,6 +53,7 @@ $services = array(
         'functions' => array(
             'block_course_activity_time_change_time',
             'block_course_activity_time_get_students',
+            'block_course_activity_time_export_progress',
         ),
         'enabled' => 1,
         'restrictedusers' => 0,
