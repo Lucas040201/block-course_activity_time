@@ -83,6 +83,7 @@ class CourseActivityTimeService
 
         $usersEnrolledInCourse = array_map(function($user) use ($activitiesId) {
             $user->activities = $this->courseActivityTimeStudentRepository->getCalculatedUserTime($user->id, $activitiesId);
+            sort($user->activities);
             return $user;
         }, $usersEnrolledInCourse);
 
@@ -103,6 +104,23 @@ class CourseActivityTimeService
             $activitiesToFormat[] = $item;
         }
 
+        $activityTime = $this->courseActivityTimeRepository->getConfiguredActivities($activitiesId);
+
+        $activitiesToFormat = array_filter($activitiesToFormat, function ($activity) use ($activityTime) {
+            return !!(array_filter($activityTime, function($time) use ($activity) {
+                return (int)$activity->id === (int)$time->moduleid;
+            }));
+        });
+
+        $activitiesId = array_filter($activitiesId, function ($activity) use ($activitiesToFormat) {
+            return !!(array_filter($activitiesToFormat, function($toFormat) use ($activity) {
+                return (int)$activity === (int)$toFormat->id;
+            }));
+        });
+
+        sort($activitiesToFormat);
+        sort($activitiesId);
+        
         return [$activitiesToFormat, $activitiesId];
     }
 

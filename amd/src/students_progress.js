@@ -137,6 +137,9 @@ define([
             const acitivitiesNames = progress.activities.map(activity => {
                 return activity.name;
             });
+            const activitiesId = progress.activities.map(activity => {
+                return activity.id;
+            });
             const csvHeader = ['Nome', 'E-mail', ...acitivitiesNames, 'Total'];
 
             const formattedCsvHeader = csvHeader.join(';');
@@ -156,16 +159,29 @@ define([
                 }
     
                 const defaultLabel = 'activity';
-                const userActivities = user.activities.map(activity => {
+                const userActivities = activitiesId.map(activityId => {
+                    const currentUserActivityId = user.activities.find(userActivity => {
+                        return Number(userActivity.moduleid) === Number(activityId);
+                    });
+        
+                    if(currentUserActivityId) {
+                        return getFormattedTime(currentUserActivityId.totaltime)
+                    }
+
+                    return '00:00:00'
+                });
+                
+                user.activities.map(activity => {
                     return getFormattedTime(activity.totaltime)
                 });
 
                 let itemsCount = 0;
                 const activitiesObject = {}
                 while(itemsCount <= acitivitiesNames.length - 1) {
-                    activitiesObject[`${defaultLabel}${itemsCount}`] = userActivities[itemsCount] ?? '00:00:00';
+                    activitiesObject[`${defaultLabel}${itemsCount}`] = userActivities[itemsCount];
                     itemsCount++;
                 }
+
 
                 const final = {...userInfo, ...activitiesObject, total: getFormattedTime(user.total)};
                 row.push(final);
@@ -187,9 +203,14 @@ define([
         if(!totaltime) {
             return '00:00:00';
         }
-        const hours = Math.floor(totaltime / 3600);
-        const minutes = Math.floor((totaltime / 60) % 60);
-        const seconds = totaltime % 60;
+        let hours = Math.floor(totaltime / 3600);
+        let minutes = Math.floor((totaltime / 60) % 60);
+        let seconds = totaltime % 60;
+
+        hours = (hours < 10)? '0' + hours: hours;
+        minutes = (minutes < 10)? '0' + minutes: minutes;
+        seconds = (seconds < 10)? '0' + seconds: seconds;
+
         return `${hours}:${minutes}:${seconds}`;
     }
     async function init(root) {
