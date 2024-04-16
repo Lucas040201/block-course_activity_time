@@ -63,4 +63,24 @@ SQL;
         $sql = "select * from {{$this->getTable()}} where estimatedtime is not null and moduleid in ($join)";
         return $this->db->get_records_sql($sql);
     }
+
+    public function getDeletedModules(array $modulesIds, int $courseId)
+    {
+        list($sqlWhere, $params) = $this->db->get_in_or_equal($modulesIds, SQL_PARAMS_QM, 'param', false);
+        $sql = "select * 
+                from {{$this->getTable()}} 
+                where moduleid {$sqlWhere} and courseid = ?";
+        $params[] = $courseId;
+        return $this->db->get_records_sql($sql, $params);
+    }
+
+    public function deleteConfig(array $activitiesId)
+    {
+        return $this->db->delete_records_list($this->getTable(), 'id', $activitiesId);
+    }
+
+    public function getAllCourses()
+    {
+        return $this->db->get_records('course', null, 'id asc');
+    }
 }

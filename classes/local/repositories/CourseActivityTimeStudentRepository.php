@@ -138,9 +138,7 @@ class CourseActivityTimeStudentRepository extends RepositoryBase
             select 
                 mcats.id,
                 mcatc.moduleid,
-                (
-                    select sum((mcats2.completedat - mcats2.firstaccess)) from {{$this->getTable()}} mcats2 inner join {course_activity_time_course} mcatc2 on mcats2.courseactivityid = mcatc2.id where mcatc2.courseid = mcatc.courseid and completedat is not null and firstaccess is not null and mcats2.userid = mu.id
-                ) as totaltime
+                (mcats.completedat - mcats.firstaccess) as totaltime
             from {user} mu
             inner join {{$this->getTable()}} mcats on mcats.userid = mu.id
             inner join {course_activity_time_course} mcatc on mcats.courseactivityid = mcatc.id
@@ -167,5 +165,17 @@ class CourseActivityTimeStudentRepository extends RepositoryBase
         return array_values($this->db->get_records_sql($sql, [
             'courseid' => $courseid
         ]));
+    }
+
+    public function deleteVisualization(int $activityId)
+    {
+        $this->db->delete_records($this->getTable(), [
+            'courseactivityid' => $activityId
+        ]);
+    }
+
+    public function deleteConfig(array $activitiesIds)
+    {
+        $this->db->delete_records_list($this->getTable(), 'courseactivityid', $activitiesIds);
     }
 }

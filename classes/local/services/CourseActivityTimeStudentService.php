@@ -148,6 +148,11 @@ class CourseActivityTimeStudentService
         ];
     }
 
+    public function deleteConfig(array $activitiesIds)
+    {
+        $this->courseActivityTimeStudentRepository->deleteConfig($activitiesIds);
+    }
+
     public static function getService(): CourseActivityTimeStudentService
     {
         if (self::$courseActivityTimeStudent === null) {

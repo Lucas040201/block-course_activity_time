@@ -124,6 +124,21 @@ class CourseActivityTimeService
         return [$activitiesToFormat, $activitiesId];
     }
 
+    public function getDeletedModules(array $modulesIds, int $courseId)
+    {
+        return $this->courseActivityTimeRepository->getDeletedModules($modulesIds, $courseId);
+    }
+
+    public function deleteConfig(array $activitiesId)
+    {
+        $this->courseActivityTimeRepository->deleteConfig($activitiesId);
+    }
+
+
+    public function getAllCourses()
+    {
+        return $this->courseActivityTimeRepository->getAllCourses();
+    }
 
     public static function getService(): CourseActivityTimeService
     {
