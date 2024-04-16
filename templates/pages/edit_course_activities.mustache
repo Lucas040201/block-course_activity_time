@@ -1,5 +1,6 @@
 <div id="block-course-activity-time-edit-{{uniqid}}" class="container-fluid" data-courseid="{{course.id}}">
     <h2>{{#str}}defining_time, block_course_activity_time{{/str}}</h2>
+    {{> block_course_activity_time/components/navigation }}
     <div class="d-flex justify-content-between">
         <h3 class="course-name">{{course.fullname}}</h3>
         <p>{{#str}}total_workload, block_course_activity_time{{/str}}<span class="total-time"> {{totalTime}}</span></p>

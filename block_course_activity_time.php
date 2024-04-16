@@ -58,7 +58,7 @@ class block_course_activity_time extends block_base
         $metrics = (new moodle_url("/blocks/course_activity_time/student_metrics.php?id={$COURSE->id}&userid={$USER->id}"))->out(false);
         $usersUrl = (new moodle_url("/blocks/course_activity_time/students_progress.php?id={$COURSE->id}"))->out(false);
         $editCourseUrl = (new moodle_url("/blocks/course_activity_time/edit_course_activities.php?id={$COURSE->id}"))->out(false);
-        $renderable = new main($metrics, $usersUrl, $editCourseUrl, $isStudent);
+        $renderable = new main($COURSE, $metrics, $usersUrl, $editCourseUrl, $isStudent);
         $this->content->text = $renderer->render($renderable);
     }
 

@@ -61,3 +61,6 @@ $string['export'] = 'Exportar';
 $string['bigger_time'] = 'Seu comprometimento com as atividades do curso é impressionante';
 $string['smaller_time'] = 'Você está dentro do cronograma planejado para as atividades do curso;';
 $string['need_help_time'] = 'Notamos que você não tem dedicado o tempo esperado às atividades do curso recentemente. Você precisa de ajuda?';
+$string['back_to_course'] = 'Voltar para o curso';
+$string['back_to_progress'] = 'Ver Progresso dos alunos';
+$string['back_to_edit'] = 'Editar Atividade';

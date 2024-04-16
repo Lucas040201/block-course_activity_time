@@ -1,0 +1,17 @@
+<div class="row pb-3 py-2">
+    <div class="col-2">
+        <a href="{{courseUrl}}">{{#str}} back_to_course, block_course_activity_time {{/str}}</a>
+    </div>
+    {{#siteAdmin}}
+        {{^isInProgressPage}}
+            <div class="col-2">
+                <a href="{{progressUrl}}">{{#str}} back_to_progress, block_course_activity_time {{/str}}</a>
+            </div>
+        {{/isInProgressPage}}
+        {{^isInEditPage}}
+            <div class="col-2">
+                <a href="{{editUrl}}">{{#str}} back_to_edit, block_course_activity_time {{/str}}</a>
+            </div>
+        {{/isInEditPage}}
+    {{/siteAdmin}}
+</div>

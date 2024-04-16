@@ -45,9 +45,12 @@ class main implements renderable, templatable
     /** @var string */
     private $editCourseUrl;
 
+    /** @var stdClass */
+    private $course;
     
-    public function __construct(string $metrics, string $usersUrl, string $editCourseUrl, bool $isStudent = false)
+    public function __construct(stdClass $course, string $metrics, string $usersUrl, string $editCourseUrl, bool $isStudent = false)
     {
+        $this->course = $course;
         $this->metrics = $metrics;
         $this->usersUrl = $usersUrl;
         $this->editCourseUrl = $editCourseUrl;
@@ -62,6 +65,7 @@ class main implements renderable, templatable
             'metricsUrl' => $this->metrics,
             'editCourseUrl' => $this->editCourseUrl,
             'usersUrl' => $this->usersUrl,
+            'course' => $this->course,
         ];
     }
 

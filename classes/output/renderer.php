@@ -26,6 +26,7 @@ namespace block_course_activity_time\output;
 
 defined('MOODLE_INTERNAL') || die();
 
+use block_course_activity_time\local\utils\MoodleUrl;
 use plugin_renderer_base;
 
 class renderer extends plugin_renderer_base
@@ -33,26 +34,52 @@ class renderer extends plugin_renderer_base
 
     public function render_main(main $main)
     {
-        $context = $main->export_for_template($this);
-
-        return $this->render_from_template('block_course_activity_time/pages/main', $context);
+        return $this->render_from_template('block_course_activity_time/pages/main', $this->getContext($main));
     }
 
     public function render_edit_course_activities(edit_course_activities $edit)
     {
-        $context = $edit->export_for_template($this);
-        return $this->render_from_template('block_course_activity_time/pages/edit_course_activities', $context);
+        return $this->render_from_template('block_course_activity_time/pages/edit_course_activities', $this->getContext($edit));
     }
 
     public function render_students_progress(students_progress $progress)
     {
-        $context = $progress->export_for_template($this);
-        return $this->render_from_template('block_course_activity_time/pages/students_progress', $context);
+        return $this->render_from_template('block_course_activity_time/pages/students_progress',$this->getContext($progress));
     }
 
     public function render_student_metrics(student_metrics $metrics)
     {
-        $context = $metrics->export_for_template($this);
-        return $this->render_from_template('block_course_activity_time/pages/student_metrics', $context);
+        return $this->render_from_template('block_course_activity_time/pages/student_metrics', $this->getContext($metrics));
+    }
+
+    private function getContext(\templatable $templatable)
+    {
+        $context = $templatable->export_for_template($this);
+        $param = [
+            'id' => $context['course']->id
+        ];
+        $siteAdmin = is_siteadmin();
+        $isInProgressPage = false;
+        $isInEditPage = false;
+        $editUrl = MoodleUrl::getMoodleUrl('/blocks/course_activity_time/edit_course_activities.php', $param);
+        $progressUrl = MoodleUrl::getMoodleUrl('/blocks/course_activity_time/students_progress.php', $param);
+        $courseUrl = MoodleUrl::getMoodleUrl('/course/view.php', $param);
+
+        if($templatable instanceof edit_course_activities) {
+            $isInEditPage = true;
+        }
+
+        if($templatable instanceof students_progress) {
+            $isInProgressPage = true;
+        }
+
+        $context['isInEditPage'] = $isInEditPage;
+        $context['editUrl'] = $editUrl;
+        $context['isInProgressPage'] = $isInProgressPage;
+        $context['progressUrl'] = $progressUrl;
+        $context['siteAdmin'] = $siteAdmin;
+        $context['courseUrl'] = $courseUrl;
+        return $context;
+
     }
 }
