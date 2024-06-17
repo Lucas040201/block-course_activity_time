@@ -24,13 +24,24 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-use core\event\course_module_viewed;
+use \mod_quiz\event\course_module_viewed;
+use \mod_forum\event\discussion_viewed;
+use \mod_assign\event\submission_form_viewed;
 use \core\event\course_module_completion_updated;
 use \mod_assign\event\assessable_submitted;
+use \mod_forum\event\assessable_uploaded;
 
 $observers = [
     [
         'eventname' => course_module_viewed::class,
+        'callback' => '\block_course_activity_time\observer\student_view_monitoring::view_activity',
+    ],
+    [
+        'eventname' => submission_form_viewed::class,
+        'callback' => '\block_course_activity_time\observer\student_view_monitoring::view_activity',
+    ],
+    [
+        'eventname' => discussion_viewed::class,
         'callback' => '\block_course_activity_time\observer\student_view_monitoring::view_activity',
     ],
     [
@@ -39,6 +50,10 @@ $observers = [
     ],
     [
         'eventname' => assessable_submitted::class,
+        'callback' => '\block_course_activity_time\observer\student_view_monitoring::complete_activity',
+    ],
+    [
+        'eventname' => assessable_uploaded::class,
         'callback' => '\block_course_activity_time\observer\student_view_monitoring::complete_activity',
     ],
 ];
